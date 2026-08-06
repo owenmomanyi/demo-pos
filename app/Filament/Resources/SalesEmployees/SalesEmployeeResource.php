@@ -1,0 +1,63 @@
+<?php
+
+namespace App\Filament\Resources\SalesEmployees;
+
+use App\Filament\Resources\SalesEmployees\Pages\CreateSalesEmployee;
+use App\Filament\Resources\SalesEmployees\Pages\EditSalesEmployee;
+use App\Filament\Resources\SalesEmployees\Pages\ListSalesEmployees;
+use App\Filament\Resources\SalesEmployees\Schemas\SalesEmployeeForm;
+use App\Filament\Resources\SalesEmployees\Tables\SalesEmployeesTable;
+use App\Models\SalesEmployee;
+use BackedEnum;
+use UnitEnum;
+use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+
+class SalesEmployeeResource extends Resource
+{
+    protected static ?string $model = SalesEmployee::class;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Master Data';
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
+
+    protected static ?string $recordTitleAttribute = 'employee_code';
+
+    public static function form(Schema $schema): Schema
+    {
+        return SalesEmployeeForm::configure($schema);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return SalesEmployeesTable::configure($table);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => ListSalesEmployees::route('/'),
+            'create' => CreateSalesEmployee::route('/create'),
+            'edit' => EditSalesEmployee::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getRecordRouteBindingEloquentQuery(): Builder
+    {
+        return parent::getRecordRouteBindingEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
+    }
+}
