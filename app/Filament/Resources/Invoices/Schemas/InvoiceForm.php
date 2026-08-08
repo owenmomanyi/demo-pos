@@ -116,29 +116,31 @@ class InvoiceForm
                                     ->preload()
                                     ->live()
                                     ->columnSpan(2)
-                                    ->afterStateUpdated(function ($state, callable $set) {
-                                        $item = Item::find($state, ['*']);
-
-                                        if (! $item) {
-                                            return;
-                                        }
-
-                                        $set('item_code', $item->item_code);
-                                        $set('item_description', $item->item_description);
-                                        $set('unit_of_measure', $item->unit_of_measure);
-                                        $set('vat_code', $item->vat_code);
-                                        $set('vat_percent', (float) ($item->vat_percent ?? 0));
-                                        $set('unit_price', $item->price);
-                                        $set('price_before_discount', $item->price);
-                                        $set('discount_percent', 0);
-                                        $set('quantity', 1);
-                                        $set('price_after_discount', $item->price);
-                                        $set('vat_amount', 0);
-                                        $set('line_total', $item->price);
+                                    ->afterStateUpdated(function ($state, Set $set) {
+                                        self::syncSelectedItem($state, $set);
                                     })
                                     ->required(),
 
+                                Select::make('item_description_lookup')
+                                    ->label('Description')
+                                    ->options(fn () => Item::query()
+                                        ->orderBy('item_description', 'asc')
+                                        ->pluck('item_description', 'id'))
+                                    ->searchable()
+                                    ->live()
+                                    ->dehydrated(false)
+                                    ->afterStateUpdated(function ($state, Set $set) {
+                                        $set('item_id', $state);
+
+                                        self::syncSelectedItem($state, $set);
+                                    })
+                                    ->columnSpan(3)
+                                    ->required(),
+
                                 Hidden::make('item_code')
+                                    ->dehydrated(),
+
+                                Hidden::make('item_description')
                                     ->dehydrated(),
 
                                 Hidden::make('unit_of_measure')
@@ -158,12 +160,6 @@ class InvoiceForm
                                 Hidden::make('line_total')
                                     ->default(0)
                                     ->dehydrated(),
-
-                                TextInput::make('item_description')
-                                    ->label('Description')
-                                    ->disabled()
-                                    ->dehydrated()
-                                    ->columnSpan(3),
 
                                 Select::make('warehouse_id')
                                     ->label('Warehouse')
@@ -266,6 +262,7 @@ class InvoiceForm
 
                         TextInput::make('remarks')
                             ->label('Remarks')
+                            ->required()
                             ->columnSpan(2),
                     ]),
 
@@ -315,6 +312,30 @@ class InvoiceForm
         $set('line_total', $lineTotal);
 
         self::updateNestedInvoiceTotals($get, $set);
+    }
+
+    protected static function syncSelectedItem(mixed $itemId, Set $set): void
+    {
+        $item = Item::find($itemId, ['*']);
+
+        if (! $item) {
+            return;
+        }
+
+        $set('item_id', $item->id);
+        $set('item_description_lookup', $item->id);
+        $set('item_code', $item->item_code);
+        $set('item_description', $item->item_description);
+        $set('unit_of_measure', $item->unit_of_measure);
+        $set('vat_code', $item->vat_code);
+        $set('vat_percent', (float) ($item->vat_percent ?? 0));
+        $set('unit_price', $item->price);
+        $set('price_before_discount', $item->price);
+        $set('discount_percent', 0);
+        $set('quantity', 1);
+        $set('price_after_discount', $item->price);
+        $set('vat_amount', 0);
+        $set('line_total', $item->price);
     }
 
     protected static function updateInvoiceTotals(array $lines, Set $set): void
