@@ -33,8 +33,7 @@ jobs:
 
       - name: Prepare Laravel application
         run: |
-          cp .env.example .env
-          php artisan key:generate
+          php artisan config:clear
 
       - name: Create deployment package
         run: |
