@@ -60,8 +60,11 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          package: php-app.zip
+      - name: Verify Azure Context
+        run: az account show
+
+      - name: List Resource Groups
+        run: az group list --query "[].name"
+
+      - name: List Web Apps
+        run: az webapp list --query "[].name
