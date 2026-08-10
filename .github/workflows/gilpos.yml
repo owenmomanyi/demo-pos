@@ -63,11 +63,8 @@ jobs:
       - name: Verify Azure Context
         run: az account show
 
-      - name: List Resource Groups
-        run: az group list --output table
-
-      - name: List Web Apps
-        run: az webapp list --output table
+      - name: Show Web Apps
+        run: az webapp list --query "[].name"
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
