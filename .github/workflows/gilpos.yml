@@ -25,7 +25,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ env.PHP_VERSION }}
-          extensions: mbstring, bcmath, pdo, pdo_mysql
+          extensions: mbstring,bcmath,pdo,pdo_mysql
           tools: composer
 
       - name: Install Composer dependencies
@@ -60,14 +60,14 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Verify Azure Context
+      - name: Show Account
         run: az account show
 
-      - name: Show Web Apps
-        run: az webapp list --query "[].name"
+      - name: Show Web App
+        run: az webapp show --name gilpos-app --resource-group gilpos
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          app-name: gilpos-app
           package: php-app.zip
