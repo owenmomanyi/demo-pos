@@ -64,7 +64,4 @@ jobs:
         run: az account show
 
       - name: List Resource Groups
-        run: az group list --query "[].name"
-
-      - name: List Web Apps
-        run: az webapp list --query "[].name
+      
