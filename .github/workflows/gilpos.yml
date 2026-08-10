@@ -64,4 +64,13 @@ jobs:
         run: az account show
 
       - name: List Resource Groups
-      
+        run: az group list --output table
+
+      - name: List Web Apps
+        run: az webapp list --output table
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          package: php-app.zip
