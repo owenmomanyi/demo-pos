@@ -31,10 +31,6 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --no-dev --optimize-autoloader
 
-      - name: Prepare Laravel application
-        run: |
-          php artisan config:clear
-
       - name: Create deployment package
         run: |
           zip -r php-app.zip . \
