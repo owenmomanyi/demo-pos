@@ -9,6 +9,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
@@ -24,7 +25,7 @@ class InvoicesTable
                     ->searchable(),
                 TextColumn::make('customer.customer_code')
                     ->searchable(),
-                TextColumn::make('sales_employee.employee_code')
+                TextColumn::make('salesEmployee.employee_code')
                     ->searchable(),
                 TextColumn::make('posting_date')
                     ->date()
@@ -76,6 +77,7 @@ class InvoicesTable
                             'status' => 'Completed',
                         ]);
                     }),
+                ViewAction::make(),
                 EditAction::make(),
             ])
             ->toolbarActions([

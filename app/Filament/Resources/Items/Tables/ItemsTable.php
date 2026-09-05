@@ -23,7 +23,7 @@ class ItemsTable
                 TextColumn::make('item_description')
                     ->searchable(),
                 TextColumn::make('price')
-                    ->prefix('KES')
+                    ->prefix('KES ')
                     ->sortable(),
                 TextColumn::make('unit_of_measure')
                     ->label('UoM')

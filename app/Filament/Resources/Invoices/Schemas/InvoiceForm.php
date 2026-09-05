@@ -195,6 +195,7 @@ class InvoiceForm
                                 TextInput::make('quantity_available')
                                     ->label('Qty in WHSE')
                                     ->disabled()
+                                    ->hidden()
                                     ->dehydrated(false)
                                     ->columnSpan(1),
 
@@ -262,7 +263,7 @@ class InvoiceForm
 
                         TextInput::make('remarks')
                             ->label('Remarks')
-                            ->required()
+                            ->hidden()
                             ->columnSpan(2),
                     ]),
 
